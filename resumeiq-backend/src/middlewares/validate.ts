@@ -15,9 +15,9 @@ export const validate = (schema: AnyZodObject) => {
         res.status(400).json({
           status: 'fail',
           message: 'Validation failed processing input fields.',
-          errors: error.errors.map((err) => ({
-            field: err.path.join('.').replace('body.', ''),
-            message: err.message,
+          errors: error.issues.map((issue) => ({
+            field: issue.path.join('.').replace('body.', ''),
+            message: issue.message,
           })),
         });
         return;

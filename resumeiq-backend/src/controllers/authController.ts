@@ -59,8 +59,8 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
       return next(new AppError('Invalid credentials. Please try again.', 401));
     }
 
-    const accessToken = generateAccessToken({ id: user.id as string, role: user.role, email: user.email });
-    const newRefreshToken = generateRefreshToken({ id: user.id as string });
+    const accessToken = generateAccessToken({ id: user.id, role: user.role, email: user.email });
+    const newRefreshToken = generateRefreshToken({ id: user.id});
 
     // Append token to user document array (supports multi-device login states)
     user.refreshToken = user.refreshToken ? [...user.refreshToken, newRefreshToken] : [newRefreshToken];
@@ -111,8 +111,8 @@ export const refreshSession = async (req: Request, res: Response, next: NextFunc
     try {
       const decoded = verifyRefreshToken(oldRefreshToken);
       
-      const newAccessToken = generateAccessToken({ id: user.id as string, role: user.role, email: user.email });
-      const newRefreshToken = generateRefreshToken({ id: user.id as string });
+      const newAccessToken = generateAccessToken({ id: user.id, role: user.role, email: user.email });
+      const newRefreshToken = generateRefreshToken({ id: user.id });
 
       user.refreshToken.push(newRefreshToken);
       await user.save();

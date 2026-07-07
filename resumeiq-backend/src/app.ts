@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
+//@ts-ignore
 import cookieParser from 'cookie-parser';
 
 import authRoutes from './routes/authRoutes.js';

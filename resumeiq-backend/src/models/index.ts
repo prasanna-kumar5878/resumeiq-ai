@@ -1,3 +1,3 @@
-export * from './User.js';
-export * from './Resume.js';
-export * from './JobMatch.js';
+export { User } from './User.js';
+export { Resume } from './Resume.js';
+export { JobMatch } from './JobMatch.js';
