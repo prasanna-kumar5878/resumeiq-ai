@@ -106,7 +106,7 @@ export const refreshSession = async (req: Request, res: Response, next: NextFunc
     }
 
     // Filter out the old refresh token from the database array
-    user.refreshToken = user.refreshToken ? user.refreshToken.filter((t) => t !== oldRefreshToken) : [];
+    user.refreshToken = user.refreshToken ? user.refreshToken.filter((t: string) => t !== oldRefreshToken) : [];
 
     try {
       const decoded = verifyRefreshToken(oldRefreshToken);

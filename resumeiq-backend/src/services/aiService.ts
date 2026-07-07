@@ -126,7 +126,7 @@ export const analyzeResumeText = async (rawText: string): Promise<IAIParsedRespo
       temperature: 0.2 // Low temperature reduces creative drifts and locks in factual parsing consistency
     });
 
-    const parsedJSON = JSON.parse(response.choices[0].message.content || '{}');
+    const parsedJSON = JSON.parse(response.choices[0]?.message?.content || '{}');
     return parsedJSON as IAIParsedResponse;
   } catch (error) {
     console.error('❌ AI Engine Processing Disruption:', error);
