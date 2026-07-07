@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { AppError } from '../utils/appError.js';
-import { UserRole } from '../models/index.js';
+import { UserRole } from '../models/index.js'; // Pulls cleanly from updated index export
 
 interface JwtPayloadData {
   id: string;
@@ -23,10 +23,8 @@ export const protect = async (req: Request, res: Response, next: NextFunction): 
 
     const JWT_SECRET = process.env.JWT_ACCESS_SECRET || 'fallback-super-secret-key';
     
-    // Verify token validity
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayloadData;
 
-    // Attach verified user payload directly to request context
     req.user = {
       id: decoded.id,
       role: decoded.role,
@@ -39,7 +37,6 @@ export const protect = async (req: Request, res: Response, next: NextFunction): 
   }
 };
 
-// Role Restricter Middleware Factory
 export const restrictTo = (...allowedRoles: UserRole[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.user || !allowedRoles.includes(req.user.role)) {
