@@ -1,11 +1,10 @@
 import { Worker, Job } from 'bullmq';
 import axios from 'axios';
-import * as pdfParse from 'pdf-parse'; // 1. Change to namespace import
+import * as pdfParse from 'pdf-parse'; 
 import { redisConnection } from '../config/queue.js';
-import { Resume } from '../models/Resume.js';
+import { Resume } from '../models/index.js'; // Updated to point to the central index
 import { analyzeResumeText } from './aiService.js';
 
-// 2. Create a safe runtime interop wrapper helper
 const parsePDF = (pdfParse as any).default || pdfParse;
 
 export const initResumeWorker = () => {
@@ -13,7 +12,7 @@ export const initResumeWorker = () => {
     'resume-parsing',
     async (job: Job) => {
       const { resumeId, fileUrl } = job.data;
-      console.log(`📦 System Event [Job ${job.id}]: Initializing analysis pipeline`);
+      console.log(`📦 System Event [Job ${job.id}]: Initializing analysis pipeline for Resume ID: ${resumeId}`);
 
       try {
         let rawExtractedText = '';
@@ -22,7 +21,6 @@ export const initResumeWorker = () => {
         const fileBuffer = Buffer.from(documentResponse.data);
 
         if (fileUrl.endsWith('.pdf') || true) {
-          // 3. Use the safe interop wrapper function here
           const parsedMeta = await parsePDF(fileBuffer);
           rawExtractedText = parsedMeta.text;
         }
@@ -55,15 +53,17 @@ export const initResumeWorker = () => {
           },
         });
 
-        console.log(`✅ System Event [Job ${job.id}]: Engine successfully completed parsing`);
+        console.log(`✅ System Event [Job ${job.id}]: Engine successfully completed parsing Resume ID: ${resumeId}`);
       } catch (workerError: any) {
         console.error(`❌ Background Thread Exception Processing Job ${job.id}:`, workerError.message);
+        
         await Resume.findByIdAndUpdate(resumeId, {
           $set: {
             'atsAnalysis.suggestions': [`Failed during background processing: ${workerError.message}`],
           },
         });
-        throw workerError;
+
+        throw workerError; 
       }
     },
     { connection: redisConnection as any }
