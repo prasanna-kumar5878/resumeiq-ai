@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { UserRole } from '../models/User.js';
+import { UserRole } from '../models/index.js';
 
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'super-fallback-access-secret-key';
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'super-fallback-refresh-secret-key';

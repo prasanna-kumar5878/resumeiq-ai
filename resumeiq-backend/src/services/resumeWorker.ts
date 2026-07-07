@@ -70,7 +70,7 @@ export const initResumeWorker = () => {
         throw workerError; // Retain standard execution loop failure thresholds
       }
     },
-    { connection: redisConnection }
+    { connection: redisConnection as any, }
   );
 
   worker.on('failed', (job, err) => {

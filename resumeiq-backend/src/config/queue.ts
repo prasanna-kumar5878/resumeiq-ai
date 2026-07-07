@@ -16,7 +16,7 @@ export const redisConnection = new Redis(REDIS_URL, {
 });
 
 export const resumeParsingQueue = new Queue('resume-parsing', {
-  connection: redisConnection,
+  connection: redisConnection as any,
   defaultJobOptions: {
     attempts: 3,
     backoff: {
